@@ -1,0 +1,152 @@
+---
+- hosts: localhost
+  become: false
+  gather_facts: false
+  vars:
+    username: admin
+    password: VMware1!
+    provider: Local
+ #   new_app_version: "8.6.0-18703301"
+ #   new_app_version: "8.6.2-19092412"
+    new_app_version: "8.8.0-19675011"
+    host_name: "192.168.100.111"
+  tasks:
+
+    - name: Log Insight node up?
+      uri:
+        url: https://{{ host_name }}/login
+        follow_redirects: none
+        method: GET
+        validate_certs: no
+        status_code: 200
+      register: _result
+      failed_when: _result.status != 200
+
+    - name: Authenticate to Log Insight
+      uri:
+        url: https://{{ host_name }}:9543/api/v1/sessions
+        method: POST
+        body_format: json
+        body:
+          username: "{{ username }}"
+          password: "{{ password }}"
+          provider: "{{ provider }}"
+        validate_certs: no
+        status_code: 200
+      register: session_response
+      failed_when: session_response.status !=200
+
+    - name: Set session_header
+      set_fact:
+       session_header: "Bearer {{ session_response.json.sessionId }}"
+
+    - name: Get current Log insight version
+      uri:
+        url: https://{{ host_name }}:9543/api/v1/version
+        method: GET
+        headers:
+          authorization: "{{ session_header }}"
+        body_format: json
+        validate_certs: no
+        status_code: 200
+      register: current_app_version
+
+    - name: Show current Log Insight version
+      debug: var=current_app_version.json.version
+
+    - name: Perform Upgrade
+      block:
+        - name: Upload PAK file {{ new_app_version }}.
+          uri:
+            url: https://{{ host_name }}:9543/api/v1/upgrades
+            method: POST
+            headers:
+              authorization: "{{ session_header }}"
+            body_format: json
+            body:
+              pakUrl: http://192.168.100.90:8000/vmware/VMware-vRealize-Log-Insight-{{ new_app_version }}.pak
+            validate_certs: no
+            status_code: 200
+
+        - name: Wait until PAK file {{ new_app_version }} is uploaded
+          uri:
+            url: https://{{ host_name }}:9543/api/v1/upgrades/{{ new_app_version }}
+            method: GET
+            headers:
+              authorization: "{{ session_header }}"
+            body_format: json
+            validate_certs: no
+            status_code: 200
+          register: _result
+          until: _result.json.status.clusterStatus == "Pending"
+          retries: 720 # 1 hour
+          delay: 5
+
+        - name: Start Upgrade to version {{ new_app_version }}
+          uri:
+            url: https://{{ host_name }}:9543/api/v1/upgrades/{{ new_app_version }}/eula
+            method: PUT
+            headers:
+              authorization: "{{ session_header }}"
+            body_format: json
+            body:
+              accepted: true
+            validate_certs: no
+            status_code: 200
+
+        - name: Wait until reboot of node {{ host_name }}
+          uri:
+            url: https://{{ host_name }}/login
+            follow_redirects: none
+            method: GET
+            validate_certs: no
+            status_code: -1
+          register: _result
+          until: _result.status == -1
+          retries: 720
+          delay: 5
+
+        - name: Wait until node {{ host_name}} is ready
+          uri:
+            url: https://{{ host_name }}/login
+            follow_redirects: none
+            method: GET
+            validate_certs: no
+            status_code: 200
+          register: _result
+          until: _result.status == 200
+          retries: 720
+          delay: 5
+
+        - name: Authenticate to Log Insight after Upgrade
+          uri:
+            url: https://{{ host_name }}:9543/api/v1/sessions
+            method: POST
+            body_format: json
+            body:
+              username: "{{ username }}"
+              password: "{{ password }}"
+              provider: "{{ provider }}"
+            validate_certs: no
+            status_code: 200
+          register: session_response
+
+        - name: Get Log insight version after Upgrade
+          vars:
+            session_header: Bearer {{ session_response.json.sessionId }}
+          uri:
+            url: https://{{ host_name }}:9543/api/v1/version
+            method: GET
+            headers:
+              authorization: "{{ session_header }}"
+            body_format: json
+            validate_certs: no
+            status_code: 200
+          register: _result
+          failed_when: _result.json.version != new_app_version
+
+        - name: Show Log Insight version after Upgrade
+          debug: var=_result.json.version
+      when: current_app_version.json.version != new_app_version
+
+#EOF

@@ -1,0 +1,28 @@
+# Ansible YAML pipeline
+
+trigger:
+- main
+
+pool:
+  name: Ubuntu
+
+steps:
+- task: CopyFiles@0
+  displayName: 'Copy Playbooks to Artifacts'
+  inputs:
+    SourceFolder: playbooks
+    TargetFolder: '$(build.artifactstagingdirectory)/Playbooks'
+
+- task: PublishBuildArtifacts@0
+  displayName: 'Publish Artifact: drop'
+
+
+- task: Ansible@0
+  displayName: 'Run playbook'
+  inputs:
+    playbookRootRemoteMachine: '$(System.DefaultWorkingDirectory)/playbooks'
+    playbookPathLinkedArtifactOnRemoteMachine: playbook.yml
+    playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/playbooks/playbook2.yml'
+    inventoriesRemoteMachine: hostList
+    inventoryHostListRemoteMachine: 192.168.100.202
+    failOnStdErr: false
