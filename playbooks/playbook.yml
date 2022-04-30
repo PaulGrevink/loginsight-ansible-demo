@@ -6,9 +6,9 @@
     username: admin
     password: VMware1!
     provider: Local
- #   new_app_version: "8.6.0-18703301"
+    new_app_version: "8.6.0-18703301"
  #   new_app_version: "8.6.2-19092412"
-    new_app_version: "8.8.0-19675011"
+ #   new_app_version: "8.8.0-19675011"
     host_name: "192.168.100.111"
   tasks:
 
