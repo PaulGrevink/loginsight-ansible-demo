@@ -7,13 +7,13 @@ pool:
   name: Ubuntu
 
 steps:
-- task: CopyFiles@0
+- task: CopyFiles@2
   displayName: 'Copy Playbooks to Artifacts'
   inputs:
     SourceFolder: playbooks
     TargetFolder: '$(build.artifactstagingdirectory)/Playbooks'
 
-- task: PublishBuildArtifacts@0
+- task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
 
 
