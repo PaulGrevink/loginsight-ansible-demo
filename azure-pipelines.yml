@@ -22,7 +22,7 @@ steps:
   inputs:
     playbookRootRemoteMachine: '$(System.DefaultWorkingDirectory)/playbooks'
     playbookPathLinkedArtifactOnRemoteMachine: playbook.yml
-    playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/playbooks/playbook2.yml'
+    playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/playbooks/playbook.yml'
     inventoriesRemoteMachine: hostList
     inventoryHostListRemoteMachine: 192.168.100.202
     failOnStdErr: false
