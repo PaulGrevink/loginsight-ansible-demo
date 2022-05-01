@@ -26,7 +26,7 @@ $vLIPassword = 'VMware1!'
 # Upgrade to version
 ################################################
 #$NewVersion = "8.6.0-18703301"
-$NewVersion = "8.6.2-19092412"
+#$NewVersion = "8.6.2-19092412"
 $NewVersion = "8.8.0-19675011"
 
 
