@@ -1,6 +1,5 @@
-﻿# LogInsight
-# https://192.168.100.111/rest-api#Getting-started-with-the-Log-Insight-REST-API
-
+# LogInsight
+# Upgrade Log Insight using REST API, demo code
 
 ###############################################################
 # Handle Authentication
