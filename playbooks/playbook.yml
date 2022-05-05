@@ -66,7 +66,7 @@
             body:
               pakUrl: http://192.168.100.90:8000/vmware/VMware-vRealize-Log-Insight-{{ new_app_version }}.pak
             validate_certs: no
- #           status_code: -1
+#            status_code: -1
 
         - name: Wait until PAK file {{ new_app_version }} is uploaded
           uri:
