@@ -1,8 +1,8 @@
 # LogInsight
-# Upgrade Log Insight using REST API, demo code
+# Check Log Insight version, using REST API, demo code
 
 ###############################################################
-# Handle Authentication
+# Setting Variables
 ###############################################################
 $vLIServer = "192.168.100.111"     # Primary node
 
@@ -48,7 +48,7 @@ add-type @"
 
 
 ################################################
-# Building API string & invoking REST API
+# Authenticate to Log Insight and create Bearer with SessionID needed for Authorization
 ################################################
 $vLIBaseAuthURL = "https://" + $vLIServer + ":9543/api/v1/sessions"
 $vLIBaseURL = "https://" + $vLIServer + ":9543/api/v1/"
@@ -77,8 +77,7 @@ Write-Host -ForegroundColor White '---'
 
 
 ################################################
-# Building API string & invoking REST API,
-# Log Insight Version
+# GET Log Insight Version
 ################################################
 $URL = $vLIBaseURL+"version"
 

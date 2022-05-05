@@ -1,9 +1,9 @@
 ﻿# LogInsight
-# https://192.168.100.111/rest-api#Getting-started-with-the-Log-Insight-REST-API
+# Check Log Insight version, using REST API, demo code
 
 
 ###############################################################
-# Handle Authentication
+# Setting Variables
 ###############################################################
 $vLIServer = "192.168.100.111"     # Primary node
 
@@ -49,7 +49,7 @@ add-type @"
 
 
 ################################################
-# Building API string & invoking REST API
+# Authenticate to Log Insight and create Bearer with SessionID needed for Authorization
 ################################################
 $vLIBaseAuthURL = "https://" + $vLIServer + ":9543/api/v1/sessions"
 $vLIBaseURL = "https://" + $vLIServer + ":9543/api/v1/"
@@ -78,8 +78,7 @@ Write-Host -ForegroundColor White '---'
 
 
 ################################################
-# Building API string & invoking REST API,
-# Log Insight Version
+# GET Log Insight Version
 ################################################
 $URL = $vLIBaseURL+"version"
 
@@ -99,7 +98,7 @@ Write-Host -ForegroundColor White '---'
 
 
 ################################################
-# Log Insight Upgrades - Upgrades
+# GET /api/v1/upgrades
 ################################################
 $URL = $vLIBaseURL+"upgrades"
 
@@ -121,7 +120,7 @@ Write-Host -ForegroundColor White '---'
 
 
 ################################################
-# Log Insight Upgrades - Upgrades/local
+# GET /api/v1/upgrades/local
 ################################################
 $URL = $vLIBaseURL+"upgrades/local"
 
@@ -141,7 +140,7 @@ Write-Host -ForegroundColor White '---'
 
 
 ################################################
-# Log Insight Upgrades - Upgrades/CurrentVersion
+# GET /api/v1/upgrades/{version} Current Version
 ################################################
 $URL = $vLIBaseURL+"upgrades/$CurrentVersion"
 
@@ -159,7 +158,7 @@ $JSON.status
 
 
 ################################################
-# Log Insight Upgrades - Upgrades/NewVersion
+# GET /api/v1/upgrades/{version} New Version
 ################################################
 $URL = $vLIBaseURL+"upgrades/$NewVersion"
 
