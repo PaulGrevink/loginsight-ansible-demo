@@ -100,7 +100,6 @@ Write-Host -ForegroundColor White '---'
 ################################################
 # Log Insight Upgrades - Upload pakfile
 ################################################
-$version = "8.6.0-18703301"
 $URL = $vLIBaseURL+"upgrades"
 
 $JSONBody =
@@ -123,7 +122,7 @@ Write-Host -ForegroundColor Cyan '.PAK file uploaded'
 ################################################
 # Log Insight Upgrades - Start upgrade
 ################################################
-$URL = $vLIBaseURL+"upgrades/$Version/eula"
+$URL = $vLIBaseURL+"upgrades/$version/eula"
 
 $JSONBody =
 "{
